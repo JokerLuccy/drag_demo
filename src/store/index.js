@@ -36,7 +36,7 @@ const data = {
         // 点击画布时是否点中组件，主要用于取消选中组件用。
         // 如果没点中组件，并且在画布空白处弹起鼠标，则取消当前组件的选中状态
         isClickComponent: false,
-        isShowCompletePage: false, // 是否显示已完成界面
+        isShowCompletePage: JSON.parse(localStorage.getItem('isShowCompletePage')) || false, // 是否显示已完成界面
     },
     mutations: {
         ...animation.mutations,
@@ -106,9 +106,10 @@ const data = {
             state.componentData.splice(index, 1)
         },
         // 删除页面配置
-        // deletePage(state,index) {
-
-        // }
+        deletePage(state, page) {
+            state.pagesData = state.pagesData.filter(item => item.name !== page.name)
+            localStorage.setItem('pagesData', JSON.stringify(state.pagesData.filter(item => item.name !== page.name)))
+        },
     },
 }
 

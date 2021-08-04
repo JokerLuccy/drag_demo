@@ -2,13 +2,13 @@
     <div>
         <div class="toolbar">
             <el-button @click="handleShowCompletePage">已完成界面</el-button>
-            <el-button @click="undo">撤消</el-button>
-            <el-button @click="redo">重做</el-button>
-            <label class="insert" for="input">插入图片</label>
-            <input id="input" hidden type="file" @change="handleFileChange" />
-            <el-button style="margin-left: 10px;" @click="preview">预览</el-button>
-            <el-button @click="save">保存</el-button>
-            <el-button @click="clearCanvas">清空画布</el-button>
+            <el-button :disabled="isShowCompletePage" @click="undo">撤消</el-button>
+            <el-button :disabled="isShowCompletePage" @click="redo">重做</el-button>
+            <label v-if="!isShowCompletePage" class="insert" for="input">插入图片</label>
+            <input v-if="!isShowCompletePage" id="input" hidden type="file" @change="handleFileChange" />
+            <el-button :disabled="isShowCompletePage" style="margin-left: 10px;" @click="preview">预览</el-button>
+            <el-button :disabled="isShowCompletePage" @click="save">保存</el-button>
+            <el-button :disabled="isShowCompletePage" @click="clearCanvas">清空画布</el-button>
             <el-button :disabled="!areaData.components.length" @click="compose">组合</el-button>
             <el-button :disabled="!curComponent || curComponent.isLock || curComponent.component != 'Group'" @click="decompose"
                 >拆分
@@ -16,7 +16,7 @@
 
             <el-button :disabled="!curComponent || curComponent.isLock" @click="lock">锁定</el-button>
             <el-button :disabled="!curComponent || !curComponent.isLock" @click="unlock">解锁</el-button>
-            <template>
+            <template v-if="!isShowCompletePage">
                 <div class="canvas-config">
                     <span>画布大小</span>
                     <input v-model="canvasStyleData.width" />
@@ -54,6 +54,7 @@ import eventBus from '@/utils/eventBus'
 import { deepCopy } from '@/utils/utils'
 import html2canvas from 'html2canvas'
 import dayjs from 'dayjs'
+import shortId from 'shortid'
 
 export default {
     components: { Preview },
@@ -79,6 +80,7 @@ export default {
     methods: {
         // 显示已完成界面
         handleShowCompletePage() {
+            localStorage.removeItem('currentPageEditIndex')
             this.isShowCompletePage = !this.isShowCompletePage
             localStorage.setItem('isShowCompletePage', JSON.stringify(this.isShowCompletePage))
             this.$store.commit('setShowCompletePage', this.isShowCompletePage)
@@ -198,7 +200,7 @@ export default {
         },
 
         handleSavePage() {
-            html2canvas(document.getElementById('editor')).then((canvas) => {
+            html2canvas(document.getElementById('editor')).then(canvas => {
                 const dataUrl = canvas.toDataURL('image/jpeg', 0.6)
                 localStorage.setItem('canvasData', JSON.stringify(this.componentData))
                 localStorage.setItem('canvasStyle', JSON.stringify(this.canvasStyleData))
@@ -211,20 +213,37 @@ export default {
                         canvasStyle: this.canvasStyleData,
                         createdAt: dayjs(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
                         img: dataUrl,
+                        id: shortId.generate(),
                     })
                     localStorage.setItem('pagesData', JSON.stringify(pagesData))
                 } else {
                     const pagesData = JSON.parse(localStorage.getItem('pagesData'))
-                    pagesData.push({
-                        name: this.pageName,
-                        canvasData: this.componentData,
-                        canvasStyle: this.canvasStyleData,
-                        createdAt: dayjs(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
-                        img: dataUrl,
-                    })
+                    const currentPageEditIndex = JSON.parse(localStorage.getItem('currentPageEditIndex'))
+
+                    if (currentPageEditIndex !== 0 && !currentPageEditIndex) {
+                        pagesData.push({
+                            name: this.pageName,
+                            canvasData: this.componentData,
+                            canvasStyle: this.canvasStyleData,
+                            createdAt: dayjs(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
+                            img: dataUrl,
+                            id: shortId.generate(),
+                        })
+                    } else {
+                        pagesData[currentPageEditIndex] = {
+                            name: this.pageName,
+                            canvasData: this.componentData,
+                            canvasStyle: this.canvasStyleData,
+                            createdAt: dayjs(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
+                            img: dataUrl,
+                            id: shortId.generate(),
+                        }
+                    }
+
                     localStorage.setItem('pagesData', JSON.stringify(pagesData))
                 }
                 this.centerDialogVisible = false
+
                 this.$message.success('保存成功')
             })
         },

@@ -181,13 +181,13 @@ export default {
         handleBottomFun(val, page) {
             if (val === 0) {
                 // 编辑
-                this.handleEdit()
+                this.handleEdit(page)
             } else if (val === 1) {
                 // 预览
                 this.handlePreview(page)
             } else if (val === 2) {
                 // 删除
-                this.handleDelPage()
+                this.handleDelPage(page)
             } else {
                 // 二维码预览
                 this.handlePreviewInQrcode()
@@ -201,12 +201,20 @@ export default {
             this.$store.commit('setEditMode', 'preview')
         },
         // 删除处理
-        handleDelPage() {
-            console.log('删除处理')
+        handleDelPage(page) {
+            this.$store.commit('deletePage', page)
         },
         // 编辑处理
-        handleEdit() {
-            console.log('编辑处理')
+        handleEdit(page) {
+            const filterRes = this.pagesData.filter(v => v.id === page.id)
+            const currentPageEditIndex = this.pagesData.findIndex(v => v.id === page.id)
+            localStorage.setItem('canvasStyle', JSON.stringify(filterRes[0].canvasStyle))
+            localStorage.setItem('canvasData', JSON.stringify(filterRes[0].canvasData))
+            // 当前编辑的页面
+            localStorage.setItem('currentPageEditIndex', JSON.stringify(currentPageEditIndex))
+            this.$store.commit('setComponentData', filterRes[0].canvasData)
+            this.$store.commit('setCanvasStyle', filterRes[0].canvasStyle)
+            this.$store.commit('setShowCompletePage', false)
         },
         // 二维码处理
         handlePreviewInQrcode() {
