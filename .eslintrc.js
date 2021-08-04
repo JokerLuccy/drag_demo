@@ -3,13 +3,10 @@ module.exports = {
     env: {
         node: true,
     },
-    extends: [
-        'plugin:vue/essential',
-        '@vue/airbnb',
-    ],
+    extends: ['plugin:vue/essential', '@vue/airbnb'],
     parserOptions: {
         ecmaFeatures: {
-            legacyDecorators: true
+            legacyDecorators: true,
         },
         parser: 'babel-eslint',
     },
@@ -17,12 +14,12 @@ module.exports = {
         'no-console': 'off',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
         'array-element-newline': ['error', 'consistent'],
-        'indent': ['error', 4, { 'MemberExpression': 0, 'SwitchCase': 1, 'ignoredNodes': ['TemplateLiteral'] }],
-        'quotes': ['error', 'single'],
+        indent: ['error', 4, { MemberExpression: 0, SwitchCase: 1, ignoredNodes: ['TemplateLiteral'] }],
+        quotes: ['error', 'single'],
         'comma-dangle': ['error', 'always-multiline'],
-        'semi': ['error', 'never'],
+        semi: ['error', 'never'],
         'object-curly-spacing': ['error', 'always'],
-        'max-len': ['error', 140],
+        'max-len': ['error', Infinity],
         'no-new': 'off',
         'linebreak-style': 'off',
         'import/extensions': 'off',
@@ -31,7 +28,7 @@ module.exports = {
         'no-unused-vars': 'warn',
         'import/no-cycle': 'off',
         'arrow-parens': 'off',
-        'eqeqeq': 'off',
+        eqeqeq: 'off',
         'no-param-reassign': 'off',
         'import/prefer-default-export': 'off',
         'no-use-before-define': 'off',
@@ -52,13 +49,13 @@ module.exports = {
         'import/order': 'off',
         'no-trailing-spaces': 'off',
         'func-names': 'off',
-        'radix': 'off',
+        radix: 'off',
         'no-unused-expressions': 'off',
         'no-underscore-dangle': 'off',
         'no-nested-ternary': 'off',
         'no-restricted-syntax': 'off',
         'no-mixed-operators': 'off',
         'no-await-in-loop': 'off',
-        'template-curly-spacing' : 'off',
+        'template-curly-spacing': 'off',
     },
-};
+}

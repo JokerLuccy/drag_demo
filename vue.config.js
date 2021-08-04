@@ -1,4 +1,5 @@
 const CompressionPlugin = require('compression-webpack-plugin')
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -15,6 +16,9 @@ module.exports = {
                     }),
                 ],
             }
+        } 
+        return {
+            plugins: [new MonacoWebpackPlugin()],
         }
     },
 }

@@ -9,6 +9,7 @@ import '@/assets/iconfont/iconfont.css'
 import '@/styles/animate.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/styles/reset.css'
+import '@/utils/codeEditor'
 
 Vue.use(ElementUI, { size: 'small' })
 Vue.config.productionTip = true

@@ -1,8 +1,17 @@
-d<template>
+<template>
     <div v-if="editMode == 'edit'" class="v-text" @keydown="handleKeydown" @keyup="handleKeyup">
         <!-- tabindex >= 0 使得双击时聚集该元素 -->
-        <div :contenteditable="canEdit" :class="{ canEdit }" @dblclick="setEdit" :tabindex="element.id" @paste="clearStyle"
-            @mousedown="handleMousedown" @blur="handleBlur" ref="text" v-html="element.propValue" @input="handleInput"
+        <div
+            :contenteditable="canEdit"
+            :class="{ canEdit }"
+            @dblclick="setEdit"
+            :tabindex="element.id"
+            @paste="clearStyle"
+            @mousedown="handleMousedown"
+            @blur="handleBlur"
+            ref="text"
+            v-html="element.propValue"
+            @input="handleInput"
             :style="{ verticalAlign: element.style.verticalAlign }"
         ></div>
     </div>
@@ -33,9 +42,7 @@ export default {
         }
     },
     computed: {
-        ...mapState([
-            'editMode',
-        ]),
+        ...mapState(['editMode']),
     },
     methods: {
         handleInput(e) {
@@ -47,7 +54,8 @@ export default {
                 this.isCtrlDown = true
             } else if (this.isCtrlDown && this.canEdit && keycodes.includes(e.keyCode)) {
                 e.stopPropagation()
-            } else if (e.keyCode == 46) { // deleteKey
+            } else if (e.keyCode == 46) {
+                // deleteKey
                 e.stopPropagation()
             }
         },

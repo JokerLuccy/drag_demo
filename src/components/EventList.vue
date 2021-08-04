@@ -1,14 +1,9 @@
 <template>
     <div class="event-list">
         <div class="div-events">
-            <el-button @click="isShowEvent = true">添加事件</el-button>
+            <el-button @click="handleAddEvent">添加事件</el-button>
             <div>
-                <el-tag
-                    v-for="event in Object.keys(curComponent.events)"
-                    :key="event"
-                    closable
-                    @close="removeEvent(event)"
-                >
+                <el-tag v-for="event in Object.keys(curComponent.events)" :key="event" closable @close="removeEvent(event)">
                     {{ event }}
                 </el-tag>
             </div>
@@ -18,11 +13,12 @@
         <Modal v-model="isShowEvent">
             <el-tabs v-model="eventActiveName">
                 <el-tab-pane v-for="item in eventList" :key="item.key" :label="item.label" :name="item.key" style="padding: 0 20px">
-<!--                    <el-input v-if="item.key == 'redirect'" v-model="item.param" type="textarea" placeholder="请输入完整的 URL" />-->
-<!--                    <el-input v-if="item.key == 'alert'" v-model="item.param" type="textarea" placeholder="请输入要 alert 的内容" />-->
-                        <div v-if="item.key == 'alert'" id="monaco"></div>
-                    <el-button style="margin-top: 20px;" @click="addEvent(item.key, item.param)">确定</el-button>
+                    <!-- <el-input v-if="item.key == 'redirect'" v-model="item.param" type="textarea" placeholder="请输入完整的 URL" /> -->
+                    <!-- <el-input v-if="item.key == 'alert'" v-model="item.param" type="textarea" placeholder="请输入要 alert 的内容" /> -->
+                    <!-- <div v-if="item.key === 'alert'" id="alert-monaco" class="monaco"></div> -->
                 </el-tab-pane>
+                <div id="monaco" class="monaco"></div>
+                <el-button style="margin-top: 20px;" @click="addEvent(eventActiveName)">确定</el-button>
             </el-tabs>
         </Modal>
     </div>
@@ -32,7 +28,8 @@
 import { mapState } from 'vuex'
 import Modal from '@/components/Modal'
 import { eventList } from '@/utils/events'
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import { initEditor, destoryEditor } from '@/utils/codeEditor'
+import vm from '@/utils/eventBus'
 
 export default {
     components: { Modal },
@@ -42,27 +39,45 @@ export default {
             eventURL: '',
             eventActiveName: 'redirect',
             eventList, // 事件列表
+            editContext: '',
         }
     },
-    computed: mapState([
-        'curComponent',
-    ]),
+
+    computed: mapState(['curComponent']),
+    watch: {
+        isShowEvent: {
+            handler(newVal) {
+                if (!newVal) {
+                    destoryEditor()
+                    vm.$off('getCodeContext')
+                } else {
+                    // 所有事件公用一个编辑器
+                    initEditor('monaco')
+                    vm.$on('getCodeContext', this.getCodeContext)
+                }
+            },
+        },
+    },
     methods: {
         // 添加事件
-        addEvent(event, param) {
+        addEvent(event) {
             this.isShowEvent = false
-            this.$store.commit('addEvent', { event, param })
+            this.$store.commit('addEvent', { event, param: this.editContext })
         },
         // 移除事件
         removeEvent(event) {
             this.$store.commit('removeEvent', event)
         },
+        handleAddEvent() {
+            this.isShowEvent = true
+        },
+        // 代码变化赋值
+        getCodeContext(val) {
+            this.editContext = val
+        },
     },
+
     mounted() {
-        // this.monacoInstance = monaco.editor.create(document.getElementById('monaco'), {
-        //     value: 'console.log("hello,world")',
-        //     language: 'javascript',
-        // })
     },
 }
 </script>
@@ -84,6 +99,11 @@ export default {
             margin: auto;
             margin-bottom: 10px;
         }
+    }
+    .monaco {
+        width: 100%;
+        height: 450px;
+        // background-color: red;
     }
 }
 </style>
