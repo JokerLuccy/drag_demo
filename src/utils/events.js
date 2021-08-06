@@ -41,6 +41,7 @@ const eventList = [
         event: events.click,
         param: '',
     },
+
 ]
 
 export { mixins, events, eventList }

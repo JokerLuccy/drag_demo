@@ -40,17 +40,6 @@
                 </section>
             </template>
             <template v-else>
-                <!--                <div class="canvas-container" v-for="(page, index) in pagesData" :key="index">-->
-                <!--                    <div-->
-                <!--                        class="canvas"-->
-                <!--                        :style="{-->
-                <!--                            width: changeStyleWithScale(page.canvasStyle.width) + 'px',-->
-                <!--                            height: changeStyleWithScale(page.canvasStyle.height) + 'px',-->
-                <!--                        }"-->
-                <!--                    >-->
-                <!--                        <ComponentWrapper v-for="(item, index) in page.canvasData" :key="index" :config="item" />-->
-                <!--                    </div>-->
-                <!--                </div>-->
                 <div class="page-list" v-for="(page, index) in pagesData" :key="index">
                     <img id="pic-img" :src="page.img" alt="图片显示错误" />
                     <div class="page-des">

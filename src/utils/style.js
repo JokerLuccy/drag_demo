@@ -1,21 +1,12 @@
 import { sin, cos } from '@/utils/translate'
 
 export function getStyle(style, filter = []) {
-    const needUnit = [
-        'fontSize',
-        'width',
-        'height',
-        'top',
-        'left',
-        'borderWidth',
-        'letterSpacing',
-        'borderRadius',
-    ]
+    const needUnit = ['fontSize', 'width', 'height', 'top', 'left', 'borderWidth', 'letterSpacing', 'borderRadius']
 
     const result = {}
     Object.keys(style).forEach(key => {
         if (!filter.includes(key)) {
-            if (key != 'rotate') {
+            if (key !== 'rotate') {
                 result[key] = style[key]
 
                 if (needUnit.includes(key)) {
@@ -33,7 +24,7 @@ export function getStyle(style, filter = []) {
 // 获取一个组件旋转 rotate 后的样式
 export function getComponentRotatedStyle(style) {
     style = { ...style }
-    if (style.rotate != 0) {
+    if (style.rotate !== 0) {
         const newWidth = style.width * cos(style.rotate) + style.height * sin(style.rotate)
         const diffX = (style.width - newWidth) / 2 // 旋转后范围变小是正值，变大是负值
         style.left += diffX
@@ -47,8 +38,8 @@ export function getComponentRotatedStyle(style) {
         style.width = newWidth
         style.height = newHeight
     } else {
-        style.bottom = style.top + style.height
-        style.right = style.left + style.width
+        style.bottom = style.top * 1 + style.height * 1
+        style.right = style.left * 1 + style.width * 1
     }
 
     return style

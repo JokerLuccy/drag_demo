@@ -9,5 +9,6 @@ export default {
         removeEvent({ curComponent }, event) {
             Vue.delete(curComponent.events, event)
         },
+
     },
 }

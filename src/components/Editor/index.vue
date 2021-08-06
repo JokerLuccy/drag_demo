@@ -1,53 +1,30 @@
 <template>
-    <div id="editor" :class="{ edit: isEdit }"
-         :style="{
+    <div
+        id="editor"
+        :class="{ edit: isEdit }"
+        :style="{
             width: changeStyleWithScale(canvasStyleData.width) + 'px',
             height: changeStyleWithScale(canvasStyleData.height) + 'px',
         }"
-         class="editor"
-         @contextmenu="handleContextMenu"
-         @mousedown="handleMouseDown"
+        class="editor"
+        @contextmenu="handleContextMenu"
+        @mousedown="handleMouseDown"
     >
         <!-- 网格线 -->
-        <Grid/>
+        <Grid />
 
         <!--页面组件列表展示-->
-        <Shape id="editor1" v-for="(item, index) in componentData"
-               :key="item.id"
-               :active="item === curComponent"
-               :class="{ lock: item.isLock }"
-               :defaultStyle="item.style"
-               :element="item"
-               :index="index"
-               :style="getShapeStyle(item.style)"
-        >
-            <component
-                :is="item.component"
-                v-if="item.component != 'v-text'"
-                :id="'component' + item.id"
-                :element="item"
-                :propValue="item.propValue"
-                :style="getComponentStyle(item.style)"
-                class="component"
-            />
+        <Shape id="editor1" v-for="(item, index) in componentData" :key="item.id" :active="item === curComponent" :class="{ lock: item.isLock }" :defaultStyle="item.style" :element="item" :index="index" :style="getShapeStyle(item.style)">
+            <component :is="item.component" v-if="item.component != 'v-text'" :id="'component' + item.id" :element="item" :propValue="item.propValue" :style="getComponentStyle(item.style)" class="component" />
 
-            <component
-                :is="item.component"
-                v-else
-                :id="'component' + item.id"
-                :element="item"
-                :propValue="item.propValue"
-                :style="getComponentStyle(item.style)"
-                class="component"
-                @input="handleInput"
-            />
+            <component :is="item.component" v-else :id="'component' + item.id" :element="item" :propValue="item.propValue" :style="getComponentStyle(item.style)" class="component" @input="handleInput" />
         </Shape>
         <!-- 右击菜单 -->
-        <ContextMenu/>
+        <ContextMenu />
         <!-- 标线 -->
-        <MarkLine/>
+        <MarkLine />
         <!-- 选中区域 -->
-        <Area v-show="isShowArea" :height="height" :start="start" :width="width"/>
+        <Area v-show="isShowArea" :height="height" :start="start" :width="width" />
     </div>
 </template>
 
@@ -75,7 +52,8 @@ export default {
         return {
             editorX: 0,
             editorY: 0,
-            start: { // 选中区域的起点
+            start: {
+                // 选中区域的起点
                 x: 0,
                 y: 0,
             },
@@ -84,12 +62,7 @@ export default {
             isShowArea: false,
         }
     },
-    computed: mapState([
-        'componentData',
-        'curComponent',
-        'canvasStyleData',
-        'editor',
-    ]),
+    computed: mapState(['componentData', 'curComponent', 'canvasStyleData', 'editor']),
     mounted() {
         // 获取编辑器元素
         this.$store.commit('getEditor')
@@ -123,7 +96,7 @@ export default {
             // 展示选中区域
             this.isShowArea = true
 
-            const move = (moveEvent) => {
+            const move = moveEvent => {
                 // 宽度= 鼠标移动的距离-起始位置
                 this.width = Math.abs(moveEvent.clientX - startX)
                 this.height = Math.abs(moveEvent.clientY - startY)
@@ -136,7 +109,7 @@ export default {
                 }
             }
 
-            const up = (e) => {
+            const up = e => {
                 // 内存释放
                 document.removeEventListener('mousemove', move)
                 document.removeEventListener('mouseup', up)
@@ -170,8 +143,10 @@ export default {
 
             // 根据选中区域和区域中每个组件的位移信息来创建 Group 组件
             // 要遍历选择区域的每个组件，获取它们的 left top right bottom 信息来进行比较
-            let top = Infinity, left = Infinity
-            let right = -Infinity, bottom = -Infinity
+            let top = Infinity,
+                left = Infinity
+            let right = -Infinity,
+                bottom = -Infinity
             areaData.forEach(component => {
                 let style = {}
                 if (component.component == 'Group') {
@@ -191,10 +166,18 @@ export default {
                     style = getComponentRotatedStyle(component.style)
                 }
 
-                if (style.left < left) left = style.left
-                if (style.top < top) top = style.top
-                if (style.right > right) right = style.right
-                if (style.bottom > bottom) bottom = style.bottom
+                if (style.left < left) {
+                    left = style.left
+                }
+                if (style.top < top) {
+                    top = style.top
+                }
+                if (style.right > right) {
+                    right = style.right
+                }
+                if (style.bottom > bottom) {
+                    bottom = style.bottom
+                }
             })
 
             this.start.x = left
@@ -223,11 +206,12 @@ export default {
                 if (component.isLock) return
 
                 const { left, top, width, height } = component.style
-                if (x <= left && y <= top && (left + width <= x + this.width) && (top + height <= y + this.height)) {
+                console.log(left, top, width, height)
+                if (x * 1 <= left * 1 && y <= top * 1 && left * 1 + width * 1 <= x * 1 + this.width * 1 && top * 1 + height * 1 <= y * 1 + this.height * 1) {
                     result.push(component)
                 }
             })
-
+            console.log('result', result)
             // 返回在选中区域内的所有组件
             return result
         },
@@ -297,7 +281,7 @@ export default {
     margin: auto;
 
     .lock {
-        opacity: .5;
+        opacity: 0.5;
     }
 }
 

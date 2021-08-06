@@ -3,19 +3,19 @@
         <div class="div-events">
             <el-button @click="handleAddEvent">添加事件</el-button>
             <div>
-                <el-tag v-for="event in Object.keys(curComponent.events)" :key="event" closable @close="removeEvent(event)">
+                <el-tag v-for="event in Object.keys(curComponent.events)" :key="event" closable
+                        @close="removeEvent(event)">
                     {{ event }}
                 </el-tag>
             </div>
+
         </div>
 
         <!-- 选择事件 -->
         <Modal v-model="isShowEvent">
             <el-tabs v-model="eventActiveName">
-                <el-tab-pane v-for="item in eventList" :key="item.key" :label="item.label" :name="item.key" style="padding: 0 20px">
-                    <!-- <el-input v-if="item.key == 'redirect'" v-model="item.param" type="textarea" placeholder="请输入完整的 URL" /> -->
-                    <!-- <el-input v-if="item.key == 'alert'" v-model="item.param" type="textarea" placeholder="请输入要 alert 的内容" /> -->
-                    <!-- <div v-if="item.key === 'alert'" id="alert-monaco" class="monaco"></div> -->
+                <el-tab-pane v-for="item in eventList" :key="item.key" :label="item.label" :name="item.key"
+                             style="padding: 0 20px">
                 </el-tab-pane>
                 <div id="monaco" class="monaco"></div>
                 <el-button style="margin-top: 20px;" @click="addEvent(eventActiveName)">确定</el-button>
@@ -28,7 +28,7 @@
 import { mapState } from 'vuex'
 import Modal from '@/components/Modal'
 import { eventList } from '@/utils/events'
-import { initEditor, destoryEditor } from '@/utils/codeEditor'
+import { destoryEditor, initEditor } from '@/utils/codeEditor'
 import vm from '@/utils/eventBus'
 
 export default {
@@ -62,6 +62,7 @@ export default {
         // 添加事件
         addEvent(event) {
             this.isShowEvent = false
+
             this.$store.commit('addEvent', { event, param: this.editContext })
         },
         // 移除事件
@@ -75,6 +76,7 @@ export default {
         getCodeContext(val) {
             this.editContext = val
         },
+
     },
 
     mounted() {
@@ -100,6 +102,7 @@ export default {
             margin-bottom: 10px;
         }
     }
+
     .monaco {
         width: 100%;
         height: 450px;
